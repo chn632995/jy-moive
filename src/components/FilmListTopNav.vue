@@ -29,6 +29,7 @@
                     width: 40%;
                     border-bottom: 2px solid red;
                     display: block;
+                    color: #fe5100;
                 }
             }
         }
