@@ -1,7 +1,7 @@
 export default {
     path: "/film",
     component: () => import("@/views/Film/Film"),
-    redirect: '/film/nowplaying',
+    redirect: "/film/nowplaying",
     children: [
         {
             path: "nowplaying",
@@ -10,6 +10,6 @@ export default {
         {
             path: "comingsoon",
             component: () => import("@/views/Film/ComingSoon"),
-        }
+        },
     ],
 };
