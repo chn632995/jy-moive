@@ -23,7 +23,7 @@ export default {
         this.list = ret.data.data.films;
     },
     watch: {
-        '$router': function(val){
+        '$route': function(val){
             console.log(val);
         }
     },

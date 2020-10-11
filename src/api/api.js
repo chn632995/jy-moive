@@ -6,6 +6,7 @@ import {
 } from "../config/url";
 
 export const nowPlayingListData = (pageNum = 1) => {
+    http.defaults.headers.info = "";
     return http.get(nowPlayingListUri + pageNum);
 };
 
