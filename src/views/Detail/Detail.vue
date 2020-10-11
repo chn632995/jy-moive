@@ -11,21 +11,25 @@
             <!---->
         </div>
         <div class="img">
-            <img v-lazy="film.poster"/>
+            <img v-lazy="film.poster" />
         </div>
         <div class="film-detail">
-            <div>{{film.name}}</div>
-            <div>{{film.category}}</div>
-            <div>{{film.premiereAt | parsePremiereAt}}上映</div>
-            <div>{{film.nation}} | {{film.runtime}} 分钟</div>
+            <div>{{ film.name }}</div>
+            <div>{{ film.category }}</div>
+            <div>{{ film.premiereAt | parsePremiereAt }}上映</div>
+            <div>{{ film.nation }} | {{ film.runtime }} 分钟</div>
             <div>
-                {{film.synopsis}}
+                {{ film.synopsis }}
             </div>
         </div>
         <Swiper :key="'actors_' + film.actors.length">
-            <div v-for="(item,index) in film.actors" :key="index" class="swiper-slide">
+            <div
+                v-for="(item, index) in film.actors"
+                :key="index"
+                class="swiper-slide"
+            >
                 <div>
-                    <img :src="item.avatarAddress" alt="">
+                    <img :src="item.avatarAddress" alt="" />
                 </div>
             </div>
         </Swiper>
@@ -34,20 +38,20 @@
 
 <script>
 import { moiveDetail } from "@/api/api";
-import moment from 'moment'
-import Swiper from '@/components/Swiper'
+import moment from "moment";
+import Swiper from "@/components/Swiper";
 export default {
     data() {
         return {
-            film: {},
+            film: { actors: [] },
         };
     },
     components: {
-        Swiper
+        Swiper,
     },
     methods: {
         goBack: function() {
-            this.$router.push({path: '/film'});
+            this.$router.push({ path: "/film" });
         },
     },
     async mounted() {
@@ -55,16 +59,22 @@ export default {
         this.film = ret.data.data.film;
     },
     filters: {
-        parsePremiereAt: function(value){
-            return moment(value * 1000).format('YYYY-MM-DD')
-        }
-    }
+        parsePremiereAt: function(value) {
+            return moment(value * 1000).format("YYYY-MM-DD");
+        },
+    },
+    created() {
+        this.eventBus.$emit("footernav", false);
+    },
+    beforeDestroy() {
+        this.eventBus.$emit("footernav", true);
+    },
 };
 </script>
 
 <style lang="scss" scoped>
 .detail {
-    .swiper-slide{
+    .swiper-slide {
         img {
             width: 80px;
         }

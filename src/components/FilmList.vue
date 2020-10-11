@@ -1,28 +1,32 @@
 <template>
-    <div class="list">
-        <Loading v-if="loading"></Loading>
-        <div
-            class="item"
-            v-else
-            v-for="(item, index) in list"
-            @click="goDetail(item.filmId)"
-            :key="index"
-        >
-            <div class="left">
-                <img :src="item.poster" />
-            </div>
-            <div class="middle">
-                <div>{{ item.name }}</div>
-                <div>
-                    <span>观众评分 </span>
-                    <span class="grade">{{ item.grade }}</span>
+    <div class="list" :style="{ height: height + 'px' }">
+        <div>
+            <Loading v-if="loading"></Loading>
+            <div
+                class="item"
+                v-else
+                v-for="(item, index) in data"
+                @click="goDetail(item.filmId)"
+                :key="index"
+            >
+                <div class="left">
+                    <img :src="item.poster" />
                 </div>
-                <div>主演：{{ item.actors | parseActors }}</div>
-                <div v-if="type == 1">{{ item.nation }} | {{ item.runtime }}分钟</div>
-            </div>
-            <div class="right">
-                <span v-if="type == 1">购票</span>
-                <span v-else>预约</span>
+                <div class="middle">
+                    <div>{{ item.name }}</div>
+                    <div>
+                        <span>观众评分 </span>
+                        <span class="grade">{{ item.grade }}</span>
+                    </div>
+                    <div>主演：{{ item.actors | parseActors }}</div>
+                    <div v-if="type == 1">
+                        {{ item.nation }} | {{ item.runtime }}分钟
+                    </div>
+                </div>
+                <div class="right">
+                    <span v-if="type == 1">购票</span>
+                    <span v-else>预约</span>
+                </div>
             </div>
         </div>
     </div>
@@ -31,15 +35,23 @@
 <script>
 // 导入组件
 import Loading from "@/components/Loading";
+import BScroll from "better-scroll";
+import { nowPlayingListData, comingSoonListData } from "@/api/api";
 export default {
     data() {
         return {
             loading: true,
+            height: 0,
+            bs: null,
+            pageNum: 1,
+            data: [],
+            flag: true,
         };
     },
-    props: ["list","type"],
+    props: ["list", "type"],
     created() {
-        if (this.list.length > 0) {
+        this.data = this.list;
+        if (this.data.length > 0) {
             this.loading = false;
         }
     },
@@ -59,6 +71,44 @@ export default {
         goDetail: function(filmId) {
             this.$router.push({ name: "detail", params: { filmId } });
         },
+        getData: async function() {
+            this.pageNum++;
+            if (this.flag) {
+                if (this.type == 1) {
+                    var ret = await nowPlayingListData(this.pageNum);
+                } else {
+                    var ret = await comingSoonListData(this.pageNum);
+                }
+                if (ret.data.data.films.length) {
+                    this.data = this.data.concat(ret.data.data.films);
+                } else {
+                    this.flag = false;
+                }
+            }
+        },
+    },
+    mounted() {
+        this.height = document.documentElement.clientHeight - 100;
+    },
+    updated() {
+        this.$nextTick(() => {
+            this.bs = new BScroll(".list", {
+                pullUpLoad: true,
+                pullDownRefresh: true,
+                click: true,
+            });
+            this.bs.on("pullingUp", () => {
+                this.getData();
+                this.bs.finishPullUp();
+            });
+            this.bs.on("pullingDown", () => {
+                this.getData();
+                this.bs.finishPullDown();
+            });
+        });
+    },
+    beforeDestroy() {
+        this.bs = null;
     },
 };
 </script>
@@ -66,6 +116,7 @@ export default {
 <style lang="scss" scoped>
 .list {
     margin-bottom: 50px;
+    overflow: hidden;
 
     .item {
         margin-top: 15px;
