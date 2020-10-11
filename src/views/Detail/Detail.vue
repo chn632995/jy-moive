@@ -11,9 +11,7 @@
             <!---->
         </div>
         <div class="img">
-            <img
-                :src="film.poster"
-            />
+            <img v-lazy="film.poster"/>
         </div>
         <div class="film-detail">
             <div>{{film.name}}</div>
@@ -24,17 +22,28 @@
                 {{film.synopsis}}
             </div>
         </div>
+        <Swiper :key="'actors_' + film.actors.length">
+            <div v-for="(item,index) in film.actors" :key="index" class="swiper-slide">
+                <div>
+                    <img :src="item.avatarAddress" alt="">
+                </div>
+            </div>
+        </Swiper>
     </div>
 </template>
 
 <script>
 import { moiveDetail } from "@/api/api";
 import moment from 'moment'
+import Swiper from '@/components/Swiper'
 export default {
     data() {
         return {
             film: {},
         };
+    },
+    components: {
+        Swiper
     },
     methods: {
         goBack: function() {
@@ -55,6 +64,12 @@ export default {
 
 <style lang="scss" scoped>
 .detail {
+    .swiper-slide{
+        img {
+            width: 80px;
+        }
+    }
+
     .img {
         width: 100%;
         height: 260px;
