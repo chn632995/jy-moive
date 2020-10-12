@@ -6,6 +6,7 @@ import centerRouter from '@/router/routes/center'
 import cinemaRouter from "@/router/routes/cinema";
 import filmRouter from "@/router/routes/film";
 import detailRouter from "@/router/routes/detail";
+import cityRouter from "@/router/routes/city";
 
 Vue.use(VueRouter)
 
@@ -18,6 +19,7 @@ const routes = [
     cinemaRouter,
     filmRouter,
     detailRouter,
+    cityRouter
 ];
 
 const router = new VueRouter({

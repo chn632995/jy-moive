@@ -12,7 +12,10 @@ Vue.config.productionTip = false;
 // 将事件总线挂载到原型上
 Vue.prototype.eventBus = new Vue();
 
+import store from '@/store/vuex'
+
 new Vue({
     router,
+    store,
     render: (h) => h(App),
 }).$mount("#app");

@@ -22,10 +22,5 @@ export default {
         let ret = await nowPlayingListData(this.page);
         this.list = ret.data.data.films;
     },
-    watch: {
-        '$route': function(val){
-            console.log(val);
-        }
-    },
 };
 </script>
